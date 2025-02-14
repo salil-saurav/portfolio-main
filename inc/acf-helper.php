@@ -19,3 +19,16 @@ function my_acf_delete_field_data($field)
     delete_option($option_key);
 }
 add_action('acf/delete_field', 'my_acf_delete_field_data', 10, 1);
+
+
+if (function_exists('acf_add_options_page')) {
+    acf_add_options_page(array(
+        'page_title' => 'Theme Options',
+        'menu_title' => 'Theme Options',
+        'menu_slug' => 'theme-general-options',
+        'capability' => 'manage_options',
+        'redirect' => false,
+        'position' => '85', // Position below the ACF menu
+        'icon_url' => 'dashicons-admin-site-alt2', // Dashicon for the menu
+    ));
+}

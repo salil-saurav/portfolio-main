@@ -1,6 +1,9 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 class WP_Helper_Functions
 {
     /**
@@ -16,7 +19,7 @@ class WP_Helper_Functions
 
         // Resource optimization
         add_filter('style_loader_tag', [self::class, 'handle_resource_loading'], 10, 2);
-        add_filter('script_loader_tag', [self::class, 'handle_script_loading'], 10, 2);
+        // add_filter('script_loader_tag', [self::class, 'handle_script_loading'], 10, 2);
 
         // Image handling
         add_filter('wp_handle_upload', [self::class, 'compress_and_convert_to_webp'], 10, 2);
@@ -47,21 +50,38 @@ class WP_Helper_Functions
     /**
      * Handle script loading attributes
      */
-    public static function handle_script_loading($tag, $handle)
-    {
-        $attributes = [
-            'preload' => "rel='preload' as='script'",
-            'async' => 'async',
-            'defer' => 'defer'
-        ];
 
-        foreach ($attributes as $key => $value) {
-            if (str_contains($handle, $key)) {
-                return str_replace('<script', "<script $value", $tag);
-            }
-        }
-        return $tag;
-    }
+    // public static function handle_script_loading($tag, $handle)
+    // {
+    //     // Check if the script has content and it's JSON
+    //     preg_match('/<script.*>(.*?)<\/script>/is', $tag, $matches);
+
+    //     if (isset($matches[1])) {
+    //         $content = $matches[1];
+
+    //         // Check if the content is valid JSON
+    //         if (self::is_json($content)) {
+    //             // Add type="application/json" to the script tag
+    //             $tag = str_replace('<script', '<script type="application/json"', $tag);
+    //         }
+    //     }
+
+    //     // Add async, defer, or preload attributes
+    //     $attributes = [
+    //         'preload' => "rel='preload' as='script'",
+    //         'async' => 'async',
+    //         'defer' => 'defer'
+    //     ];
+
+    //     foreach ($attributes as $key => $value) {
+    //         if (str_contains($handle, $key)) {
+    //             $tag = str_replace('<script', "<script $value", $tag);
+    //         }
+    //     }
+
+    //     return $tag;
+    // }
+
 
     // ... Additional methods for other functionalities ...
 
@@ -113,62 +133,73 @@ class WP_Helper_Functions
      * Convert uploaded image to Webp
      */
 
+
     public static function compress_and_convert_to_webp($upload)
     {
-        // Check if the uploaded file is an image
-        if (strpos($upload['type'], 'image/') === 0) {
-            $file_path = $upload['file'];
-            $file_type = wp_check_filetype($file_path);
+        // Skip non-images or files that are already WebP.
+        if (strpos($upload['type'], 'image/') !== 0 || $upload['type'] === 'image/webp') {
+            return $upload;
+        }
 
-            // Process only JPEG/PNG images
-            if (in_array($file_type['type'], ['image/jpeg', 'image/png'])) {
-                // Create WebP version
-                $webp_path = $file_path . '.webp';
-                $success = false;
+        $file_path = $upload['file'];
+        $file_info = wp_check_filetype($file_path);
+        $allowed_types = ['image/jpeg', 'image/png'];
 
-                // Check for GD or Imagick support
-                if (function_exists('imagewebp')) {
-                    // GD Library
-                    switch ($file_type['type']) {
-                        case 'image/jpeg':
-                            $image = imagecreatefromjpeg($file_path);
-                            break;
-                        case 'image/png':
-                            $image = imagecreatefrompng($file_path);
-                            imagepalettetotruecolor($image); // Preserve transparency
-                            break;
-                    }
+        // Process only JPEG/PNG images.
+        if (in_array($file_info['type'], $allowed_types)) {
+            // Generate new file path with .webp extension.
+            $webp_path = preg_replace('/\.(jpe?g|png)$/i', '.webp', $file_path);
+            $success = false;
 
-                    // Compress and save as WebP (quality: 80%)
-                    $success = imagewebp($image, $webp_path, 80);
-                    imagedestroy($image);
-                } elseif (class_exists('Imagick')) {
-                    // Imagick Library
+            // Use GD Library if available.
+            if (function_exists('imagewebp')) {
+                switch ($file_info['type']) {
+                    case 'image/jpeg':
+                        $image = imagecreatefromjpeg($file_path);
+                        break;
+                    case 'image/png':
+                        $image = imagecreatefrompng($file_path);
+                        // Preserve PNG transparency.
+                        imagealphablending($image, false);
+                        imagesavealpha($image, true);
+                        break;
+                    default:
+                        return $upload;
+                }
+                // Convert to WebP (quality: 80%).
+                $success = imagewebp($image, $webp_path, 80);
+                imagedestroy($image);
+            }
+            // Fallback to Imagick if available.
+            elseif (class_exists('Imagick')) {
+                try {
                     $imagick = new Imagick($file_path);
                     $imagick->setImageFormat('webp');
                     $imagick->setImageCompressionQuality(80);
+                    $imagick->setOption('webp:lossless', 'false');
+                    $imagick->setImageAlphaChannel(Imagick::ALPHACHANNEL_ACTIVATE);
                     $success = $imagick->writeImage($webp_path);
                     $imagick->clear();
+                } catch (Exception $e) {
+                    error_log('WebP Conversion Error: ' . $e->getMessage());
                 }
+            }
 
-                // Replace original with WebP if conversion succeeded
-                if ($success) {
-                    unlink($file_path); // Delete original JPG/PNG
-                    rename($webp_path, $file_path); // Rename WebP to original filename
-
-                    // Update metadata to reflect WebP format
-                    $upload['type'] = 'image/webp';
-                    $upload['file'] = str_replace(
-                        ['.jpg', '.jpeg', '.png'],
-                        '.webp',
-                        $upload['file']
-                    );
+            // If conversion succeeded, delete the original file
+            // and update metadata to point to the new .webp file.
+            if ($success && file_exists($webp_path)) {
+                if (file_exists($file_path)) {
+                    unlink($file_path);
                 }
+                $upload['type'] = 'image/webp';
+                $upload['file'] = $webp_path;
             }
         }
 
         return $upload;
     }
+
+
 
     public static function enable_webp_support($mimes)
     {

@@ -22,11 +22,6 @@
         <div class="container">
             <div class="copyright">
                 &copy; <?php echo date('Y'); ?> <?php echo get_bloginfo('name'); ?>
-                <?php
-                if (function_exists('the_privacy_policy_link')) {
-                    the_privacy_policy_link('', '<span role="separator"> | </span>');
-                }
-                ?>
             </div>
         </div>
     </div>

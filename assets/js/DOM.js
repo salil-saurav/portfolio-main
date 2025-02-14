@@ -1,3 +1,7 @@
+/**
+ * DOM manipulation
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
     const lazyImages = document.querySelectorAll('img.lazyload');
 

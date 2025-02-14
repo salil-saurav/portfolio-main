@@ -20,13 +20,14 @@ require_once __DIR__ . '/inc/custom-posts.php';
 require_once __DIR__ . '/inc/helper-functions.php';
 require_once __DIR__ . '/inc/minify.php';
 require_once __DIR__ . '/inc/remove-blots.php';
+require_once __DIR__ . '/inc/enqueue-css-js.php';
 
 /**
- * Require components files
+ * Require components utility files
  */
 
-require_once __DIR__ . '/components/alert.php';
-require_once __DIR__ . '/components/breadrumb.php';
-require_once __DIR__ . '/components/button.php';
-require_once __DIR__ . '/components/pagination.php';
-require_once __DIR__ . '/components/image.php';
+require_once __DIR__ . '/components/utility/alert.php';
+require_once __DIR__ . '/components/utility/breadcrumb.php';
+require_once __DIR__ . '/components/utility/button.php';
+require_once __DIR__ . '/components/utility/pagination.php';
+require_once __DIR__ . '/components/utility/image.php';
