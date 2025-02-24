@@ -1,61 +1,58 @@
-# WordPress Child Theme Starter Guide
+# WordPress Starter Project
 
-## Steps to Create a Child Theme
+A boilerplate setup for WordPress development with modern development tools and best practices.
 
-1. **Create Theme Directory**
+## Features
 
-    - Navigate to `wp-content/themes/`
-    - Create a new folder: `your-theme-name-child`
+-   Basic WordPress installation
+-   Development environment setup
+-   Modern build tools integration
+-   Security best practices
+-   Starter theme structure
 
-2. **Essential Files**
-   Create these two required files:
+## Getting Started
 
-    - `style.css`
-    - `functions.php`
+1. Clone this repository
+2. Configure your local environment
+3. Install dependencies
+4. Run development server
 
-3. **style.css Template**
+## Prerequisites
 
-```css
-/*
-Theme Name: Your Theme Name Child
-Theme URI: https://example.com
-Description: Child theme for Your Theme Name
-Author: Your Name
-Author URI: https://example.com
-Template: parent-theme-folder-name
-Version: 1.0
-License: GNU General Public License v2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: your-theme-name-child
-*/
+-   PHP 7.4 or higher
+-   MySQL 5.7 or higher
+-   Node.js and npm
+-   Composer
+
+## Installation
+
+```bash
+# Clone repository
+git clone [repository-url]
+
+# Install dependencies
+composer install
+npm install
+
+# Configure environment
+cp .env.example .env
 ```
 
-4. **functions.php Template**
+## Development
 
-```php
-<?php
-function my_child_theme_enqueue_styles() {
-     wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
-     wp_enqueue_style( 'child-style',
-          get_stylesheet_directory_uri() . '/style.css',
-          array( 'parent-style' ),
-          wp_get_theme()->get('Version')
-     );
-}
-add_action( 'wp_enqueue_scripts', 'my_child_theme_enqueue_styles' );
+```bash
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
 ```
 
-5. **Activation**
-    - Go to WordPress Admin Panel
-    - Navigate to Appearance > Themes
-    - Activate your child theme
+## Contributing
 
-## Notes
+Contributions are welcome! Please read our contributing guidelines.
 
--   Replace `parent-theme-folder-name` with actual parent theme's folder name
--   Always backup before making changes
--   Test thoroughly before deployment
+## License
 
-## Customization
-
-Override parent theme files by copying them to your child theme with identical path structure.
+This project is licensed under the MIT License.
+</currentDocument>
