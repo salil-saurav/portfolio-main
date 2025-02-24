@@ -48,3 +48,4 @@ document.addEventListener('DOMContentLoaded', () => {
         lazyImages.forEach(img => loadImage(img));
     }
 });
+

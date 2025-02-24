@@ -31,3 +31,10 @@ require_once __DIR__ . '/components/utility/breadcrumb.php';
 require_once __DIR__ . '/components/utility/button.php';
 require_once __DIR__ . '/components/utility/pagination.php';
 require_once __DIR__ . '/components/utility/image.php';
+
+
+/**
+ * Require Meta fields
+ */
+
+require_once __DIR__ . '/meta-fields/acf/theme-option.php';

@@ -20,7 +20,6 @@ function my_acf_delete_field_data($field)
 }
 add_action('acf/delete_field', 'my_acf_delete_field_data', 10, 1);
 
-
 if (function_exists('acf_add_options_page')) {
     acf_add_options_page(array(
         'page_title' => 'Theme Options',

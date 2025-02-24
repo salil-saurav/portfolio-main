@@ -237,4 +237,4 @@ class AssetOptimizer
 }
 
 // Example usage
-AssetOptimizer::process_assets(__DIR__ . '/../assets');
+// AssetOptimizer::process_assets(__DIR__ . '/../assets');
