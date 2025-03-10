@@ -5,7 +5,9 @@ if (!defined('ABSPATH')) exit;
 function custom_breadcrumb_shortcode()
 {
     if (is_front_page()) {
-        return build_breadcrumb_html(['Home']);
+        return build_breadcrumb_html([
+            ['title' => 'Home', 'url' => home_url()]
+        ]);
     }
 
     $breadcrumb_items = [
@@ -33,6 +35,7 @@ function build_breadcrumb_html($items)
     $output = '<nav class="breadcrumb"><ol class="breadcrumb-list">';
 
     foreach ($items as $index => $item) {
+
         $output .= '<li class="breadcrumb-item">';
         if (isset($item['url'])) {
             $output .= '<a href="' . esc_url($item['url']) . '">' . esc_html($item['title']) . '</a>';

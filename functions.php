@@ -38,3 +38,12 @@ require_once __DIR__ . '/components/utility/image.php';
  */
 
 require_once __DIR__ . '/meta-fields/acf/theme-option.php';
+
+
+// Get current active theme name
+$theme = wp_get_theme();
+// $theme_name = $theme->get('Name');
+// echo ' <pre>';
+// print_r($theme_name);
+// wp_die();
+// echo ' </pre> ';
