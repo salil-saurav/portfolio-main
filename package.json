@@ -2,5 +2,25 @@
   "devDependencies": {
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.10.16"
-  }
+  },
+  "name": "wordpress-starter",
+  "version": "1.0.0",
+  "description": "A boilerplate setup for WordPress development with modern development tools and best practices.",
+  "main": "index.js",
+  "dependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/salil-saurav/wordpress-starter.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/salil-saurav/wordpress-starter/issues"
+  },
+  "homepage": "https://github.com/salil-saurav/wordpress-starter#readme"
 }

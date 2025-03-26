@@ -49,3 +49,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Equalize Height 
+
+window.addEventListener('load', equalizeHeights);
+window.addEventListener('resize', equalizeHeights);
+
+function equalizeHeights() {
+    const equalHeightDivs = document.querySelectorAll('.equal-height');
+
+    if (!equalHeightDivs.length) return;
+
+    // Reset heights
+    equalHeightDivs.forEach(div => div.style.height = 'auto');
+
+    // Set all divs to maximum height
+    const maxHeight = Math.max(...Array.from(equalHeightDivs).map(div =>
+        div.offsetHeight
+    ));
+
+    equalHeightDivs.forEach(div => div.style.height = maxHeight + 'px');
+}
+
+

@@ -16,7 +16,6 @@ class WP_Helper_Functions
         add_filter('wpcf7_autop_or_not', '__return_false');
         add_filter('tiny_mce_before_init', [self::class, 'remove_tinymce_background_color']);
 
-
         // Resource optimization
         add_filter('style_loader_tag', [self::class, 'handle_resource_loading'], 10, 2);
         // add_filter('script_loader_tag', [self::class, 'handle_script_loading'], 10, 2);
@@ -27,6 +26,8 @@ class WP_Helper_Functions
 
         // Security
         add_action('init', [self::class, 'restrict_comments_post_access']);
+        add_action('init', [self::class, 'disable_comments_functionality']);
+        add_action('admin_bar_menu', [self::class, 'show_template_path'], 100);
     }
 
     /**
@@ -46,44 +47,6 @@ class WP_Helper_Functions
         }
         return $tag;
     }
-
-    /**
-     * Handle script loading attributes
-     */
-
-    // public static function handle_script_loading($tag, $handle)
-    // {
-    //     // Check if the script has content and it's JSON
-    //     preg_match('/<script.*>(.*?)<\/script>/is', $tag, $matches);
-
-    //     if (isset($matches[1])) {
-    //         $content = $matches[1];
-
-    //         // Check if the content is valid JSON
-    //         if (self::is_json($content)) {
-    //             // Add type="application/json" to the script tag
-    //             $tag = str_replace('<script', '<script type="application/json"', $tag);
-    //         }
-    //     }
-
-    //     // Add async, defer, or preload attributes
-    //     $attributes = [
-    //         'preload' => "rel='preload' as='script'",
-    //         'async' => 'async',
-    //         'defer' => 'defer'
-    //     ];
-
-    //     foreach ($attributes as $key => $value) {
-    //         if (str_contains($handle, $key)) {
-    //             $tag = str_replace('<script', "<script $value", $tag);
-    //         }
-    //     }
-
-    //     return $tag;
-    // }
-
-
-    // ... Additional methods for other functionalities ...
 
     /**
      * Restrict direct access to wp-comments-post.php
@@ -205,6 +168,65 @@ class WP_Helper_Functions
     {
         $mimes['webp'] = 'image/webp';
         return $mimes;
+    }
+
+    /**
+     * Show current template path in admin bar
+     */
+    public static function show_template_path()
+    {
+        if (!is_admin_bar_showing() || !current_user_can('manage_options') || is_admin()) {
+            return;
+        }
+
+        global $template;
+        global $wp_admin_bar;
+
+
+        $theme_directory = basename(get_stylesheet_directory());
+
+        $template_path = str_replace(ABSPATH . "wp-content/themes/$theme_directory", '', $template);
+
+
+        $wp_admin_bar->add_node([
+            'id'    => 'template-path',
+            'title' => 'Template: ' . $template_path,
+            'top'   => true
+        ]);
+        /**
+         * Completely disable WordPress comments functionality
+         * @return void
+         */
+    }
+    public static function disable_comments_functionality()
+    {
+        // Remove comment support from post types
+        add_action('init', function () {
+            remove_post_type_support('post', 'comments');
+            remove_post_type_support('page', 'comments');
+        });
+
+        // Remove comment-related feeds and links
+        add_action('init', function () {
+            remove_action('wp_head', 'feed_links_extra', 3);
+            remove_action('wp_head', 'feed_links', 2);
+            remove_action('wp_head', 'rsd_link');
+            remove_action('wp_head', 'wlwmanifest_link');
+            remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0);
+            remove_action('wp_head', 'wp_generator');
+        });
+
+        // Close comments on existing content
+        add_action('init', function () {
+            update_option('default_comment_status', 'closed');
+        });
+
+        // Remove comment form
+        add_action('wp', function () {
+            if (is_single() || is_page()) {
+                remove_filter('the_content', 'prepend_attachment');
+            }
+        });
     }
 }
 

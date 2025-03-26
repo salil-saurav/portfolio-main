@@ -7,8 +7,10 @@ if (!defined('ABSPATH')) exit;
  */
 
 get_header();
-
 // Header
 get_template_part('template-parts/header');
+
+do_shortcode(get_field('breadcrumb_shortcode', 'option'));
+
 
 get_footer();

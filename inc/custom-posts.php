@@ -54,7 +54,6 @@ function register_custom_post_types()
     $custom_post_types = [
         'portfolio'   => ['menu_icon' => 'dashicons-portfolio'],
         'testimonial' => ['menu_icon' => 'dashicons-testimonial'],
-        'property'    => ['menu_icon' => 'dashicons-admin-home'] // "property" pluralizes to "properties"
     ];
 
     foreach ($custom_post_types as $post_type => $options) {

@@ -1,7 +1,6 @@
 <?php
 
 if (function_exists('acf_add_local_field_group')) {
-
     add_action('acf/init', 'my_acf_add_global_fields');
 
     function my_acf_add_global_fields()
@@ -10,95 +9,144 @@ if (function_exists('acf_add_local_field_group')) {
             'key' => 'group_global_options',
             'title' => 'Global Options',
             'fields' => array(
-
-                // Global Tab
+                // Branding Tab
                 array(
-                    'key' => 'tab_global',
-                    'label' => 'Global',
+                    'key' => 'tab_branding',
+                    'label' => 'Branding',
                     'type' => 'tab',
                 ),
-
                 array(
                     'key' => 'field_site_logo',
                     'label' => 'Site Logo',
                     'name' => 'site_logo',
-                    'type' => 'image', // Image upload field
-                    'required' => 0,
-                    'return_format' => 'array', // Options: 'array', 'id', 'url'
-                    'preview_size' => 'thumbnail', // Preview size for the image
+                    'type' => 'image',
+                    'return_format' => 'array',
+                    'preview_size' => 'medium',
                 ),
                 array(
-                    'key' => 'field_address',
-                    'label' => 'Address',
-                    'name' => 'address',
-                    'type' => 'text', // Text input field
-                    'required' => 0,
+                    'key' => 'field_site_favicon',
+                    'label' => 'Favicon',
+                    'name' => 'site_favicon',
+                    'type' => 'image',
+                    'return_format' => 'array',
+                    'preview_size' => 'thumbnail',
                 ),
                 array(
-                    'key' => 'field_email',
-                    'label' => 'Email',
-                    'name' => 'email',
-                    'type' => 'text', // Text input field
-                    'required' => 0,
-                    'wrapper' => [
-                        'width' => '50'
-                    ]
-                ),
-                array(
-                    'key' => 'field_phone_number',
-                    'label' => 'Phone Number',
-                    'name' => 'phone_number',
-                    'type' => 'text', // Text input field
-                    'required' => 0,
-                    'wrapper' => [
-                        'width' => '50'
-                    ]
-                ),
-                array(
-                    'key' => 'field_social_media_group',
-                    'label' => 'Social Media',
-                    'name' => 'social_media',
+                    'key' => 'field_company_info',
+                    'label' => 'Company Information',
+                    'name' => 'company_info',
                     'type' => 'group',
-                    'layout' => 'block', // Choose 'block' for a vertical layout or 'table' for a table-like layout
+                    'layout' => 'block',
                     'sub_fields' => array(
                         array(
-                            'key' => 'field_social_media_facebook',
-                            'label' => 'Facebook',
-                            'name' => 'social_media_facebook',
+                            'key' => 'field_company_name',
+                            'label' => 'Company Name',
+                            'name' => 'company_name',
                             'type' => 'text',
-                            'wrapper' => [
-                                'width' => '50'
-                            ]
                         ),
                         array(
-                            'key' => 'field_social_media_instagram',
-                            'label' => 'Instagram',
-                            'name' => 'social_media_instagram',
-                            'type' => 'text',
-                            'wrapper' => [
-                                'width' => '50'
-                            ]
+                            'key' => 'field_address',
+                            'label' => 'Address',
+                            'name' => 'address',
+                            'type' => 'textarea',
                         ),
                         array(
-                            'key' => 'field_social_media_tiktok',
-                            'label' => 'Tiktok',
-                            'name' => 'social_media_tiktok',
-                            'type' => 'text',
-                            'wrapper' => [
-                                'width' => '50'
-                            ]
+                            'key' => 'field_email',
+                            'label' => 'Email',
+                            'name' => 'email',
+                            'type' => 'email',
+                            'wrapper' => ['width' => '50']
                         ),
                         array(
-                            'key' => 'field_social_media_x',
-                            'label' => 'X',
-                            'name' => 'social_media_x',
+                            'key' => 'field_phone_number',
+                            'label' => 'Phone Number',
+                            'name' => 'phone_number',
                             'type' => 'text',
-                            'wrapper' => [
-                                'width' => '50'
-                            ]
+                            'wrapper' => ['width' => '50']
                         ),
-                    ),
+                    )
                 ),
+
+                // Social Media Tab
+                array(
+                    'key' => 'tab_social_media',
+                    'label' => 'Social Media',
+                    'type' => 'tab',
+                ),
+                array(
+                    'key' => 'field_social_media_accounts',
+                    'label' => 'Social Media Accounts',
+                    'name' => 'social_media_accounts',
+                    'type' => 'repeater',
+                    'layout' => 'table',
+                    'button_label' => 'Add Social Media',
+                    'sub_fields' => array(
+                        array(
+                            'key' => 'field_social_platform',
+                            'label' => 'Platform',
+                            'name' => 'platform',
+                            'type' => 'select',
+                            'choices' => array(
+                                'facebook' => 'Facebook',
+                                'instagram' => 'Instagram',
+                                'twitter' => 'Twitter',
+                                'linkedin' => 'LinkedIn',
+                                'youtube' => 'YouTube',
+                                'tiktok' => 'TikTok',
+                                'pinterest' => 'Pinterest'
+                            ),
+                            'wrapper' => ['width' => '30']
+                        ),
+                        array(
+                            'key' => 'field_social_url',
+                            'label' => 'URL',
+                            'name' => 'url',
+                            'type' => 'url',
+                            'wrapper' => ['width' => '70']
+                        )
+                    )
+                ),
+
+                // Analytics & SEO Tab
+                array(
+                    'key' => 'tab_analytics_seo',
+                    'label' => 'Analytics & SEO',
+                    'type' => 'tab',
+                ),
+                array(
+                    'key' => 'field_google_analytics',
+                    'label' => 'Google Analytics ID',
+                    'name' => 'google_analytics_id',
+                    'type' => 'text',
+                    'placeholder' => 'UA-XXXXXXXXX-X or G-XXXXXXXXXX'
+                ),
+                array(
+                    'key' => 'field_meta_tags',
+                    'label' => 'Default Meta Tags',
+                    'name' => 'default_meta_tags',
+                    'type' => 'group',
+                    'sub_fields' => array(
+                        array(
+                            'key' => 'field_meta_title',
+                            'label' => 'Meta Title',
+                            'name' => 'meta_title',
+                            'type' => 'text',
+                        ),
+                        array(
+                            'key' => 'field_meta_description',
+                            'label' => 'Meta Description',
+                            'name' => 'meta_description',
+                            'type' => 'textarea',
+                        ),
+                    )
+                ),
+
+                array(
+                    'key' => 'smtp_configuration',
+                    'label' => 'SMTP Configuration',
+                    'type' => 'tab',
+                ),
+
                 array(
                     'key' => 'field_group_smtp_configuration',
                     'label' => 'SMTP Configuration',
@@ -191,15 +239,7 @@ if (function_exists('acf_add_local_field_group')) {
                             'type' => 'link',
                             'return_format' => 'array', // or 'url', 'id', etc.
                         ),
-                        // array(
-                        //     'key' => 'field_header_cta_btn_link',
-                        //     'label' => 'CTA Button Link',
-                        //     'name' => 'header_cta_btn_link',
-                        //     'type' => 'post_object', // Use post_object field type
-                        //     'post_type' => array('page'), // Only show pages
-                        //     'return_format' => 'id', // Return the page ID
-                        //     'multiple' => false, // Single selection
-                        // ),
+
                     ),
                 ),
 
@@ -227,26 +267,6 @@ if (function_exists('acf_add_local_field_group')) {
                     'type' => 'wysiwyg',
                     'toolbar' => 'full',
                 ),
-
-
-                // array(
-                //     'key' => 'field_footer_column_4_images',
-                //     'label' => 'Column 4 Images',
-                //     'name' => 'footer_column_4_images',
-                //     'type' => 'repeater',
-                //     'layout' => 'table', // Choose 'block' for a vertical layout or 'table' for a table-like layout
-                //     'sub_fields' => array(
-                //         array(
-                //             'key' => 'field_footer_column_4_image',
-                //             'label' => 'Image',
-                //             'name' => 'footer_column_4_image',
-                //             'type' => 'image', // Image upload field
-                //             'required' => 0,
-                //             'return_format' => 'array', // Options: 'array', 'id', 'url'
-                //             'preview_size' => 'thumbnail', // Preview size for the image
-                //         ),
-                //     ),
-                // ),
 
                 // Scripts Tab
                 array(
@@ -329,18 +349,34 @@ if (function_exists('acf_add_local_field_group')) {
                     'type' => 'text', // Text input field
                 ),
 
+                // breadcrumb
+                array(
+                    'key' => 'tab_breadcrumb',
+                    'label' => 'Breadcrumb',
+                    'type' => 'tab',
+                ),
+                array(
+                    'key' => 'field_breadcrumb_shortcode',
+                    'label' => 'Breadcrumb Shortcode',
+                    'name' => 'breadcrumb_shortcode',
+                    'type' => 'text',
+                    'instructions' => 'Enter your breadcrumb shortcode here (e.g., [breadcrumb])',
+                    'placeholder' => '[your_breadcrumb_shortcode]',
+                    'default_value' => '[breadcrumb]',
+                ),
+
             ),
             'location' => array(
                 array(
                     array(
                         'param' => 'options_page',
                         'operator' => '==',
-                        'value' => 'theme-general-options', // Match the slug from the options page
+                        'value' => 'theme-general-options',
                     ),
                 ),
             ),
-            'active' => 1,
-            'description' => '',
+            'style' => 'seamless',
+            'active' => true,
         ));
     }
 }

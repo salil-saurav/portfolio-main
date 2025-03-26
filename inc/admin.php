@@ -23,7 +23,6 @@ class WP_Starter_Admin
     {
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
         add_filter('admin_footer_text', [$this, 'customize_footer_text']);
-        add_action('wp_dashboard_setup', [$this, 'setup_dashboard_widget']);
         remove_action('welcome_panel', 'wp_welcome_panel');
 
         add_action('after_setup_theme', [$this, 'register_menu']);
@@ -37,7 +36,7 @@ class WP_Starter_Admin
     {
         $assets = [
             'wp-starter-fonts' => [
-                'url' => 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap',
+                'url' => 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend:wght@100..900&display=swap',
                 'deps' => [],
             ],
             'wp-starter-admin-style' => [
@@ -62,37 +61,6 @@ class WP_Starter_Admin
             home_url(),
             get_bloginfo('name')
         );
-    }
-
-    /**
-     * Setup dashboard widget
-     */
-    public function setup_dashboard_widget()
-    {
-        wp_add_dashboard_widget(
-            'custom_dashboard_widget',
-            'Site Overview',
-            [$this, 'render_dashboard_widget']
-        );
-    }
-
-    /**
-     * Render dashboard widget content
-     */
-    public function render_dashboard_widget()
-    {
-        $stats = [
-            'Posts' => wp_count_posts()->publish,
-            'Pages' => wp_count_posts('page')->publish,
-            'Comments' => wp_count_comments()->total_comments,
-        ];
-
-        echo '<p>Welcome to your dashboard! Quick stats:</p>';
-        echo '<ul>';
-        foreach ($stats as $label => $count) {
-            printf('<li>%s: %d</li>', $label, $count);
-        }
-        echo '</ul>';
     }
 
     public function register_menu()
