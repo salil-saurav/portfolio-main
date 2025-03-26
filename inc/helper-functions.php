@@ -21,8 +21,8 @@ class WP_Helper_Functions
         add_filter('style_loader_tag', [self::class, 'handle_resource_loading'], 10, 2);
         // add_filter('script_loader_tag', [self::class, 'handle_script_loading'], 10, 2);
 
-        // Image handling
         add_filter('wp_handle_upload', [self::class, 'compress_and_convert_to_webp'], 10, 2);
+        // Image handling
         add_filter('mime_types', [self::class, 'enable_webp_support']);
 
         // Security
