@@ -17,11 +17,25 @@ if (function_exists('acf_add_local_field_group')) {
                 ),
                 array(
                     'key' => 'field_site_logo',
-                    'label' => 'Site Logo',
+                    'label' => 'Site Image',
                     'name' => 'site_logo',
                     'type' => 'image',
                     'return_format' => 'array',
                     'preview_size' => 'medium',
+                    'wrapper' => [
+                        'width' => 50,
+                    ]
+                ),
+                array(
+                    'key' => 'field_site_image_placeholder',
+                    'label' => 'Site Image Placeholder',
+                    'name' => 'site_image_placeholder',
+                    'type' => 'image',
+                    'return_format' => 'array',
+                    'preview_size' => 'medium',
+                    'wrapper' => [
+                        'width' => 50,
+                    ]
                 ),
                 array(
                     'key' => 'field_site_favicon',

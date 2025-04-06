@@ -65,7 +65,7 @@ class Custom_Login_Manager
             }
 
             .login h1 a {
-                background-image: url(<?php echo esc_url(get_theme_file_uri('assets/images/logo.jpg')); ?>) !important;
+                background-image: url(<?php echo esc_url(get_theme_file_uri('assets/images/logo.png')); ?>) !important;
                 background-size: contain !important;
                 width: 320px !important;
                 height: 120px !important;

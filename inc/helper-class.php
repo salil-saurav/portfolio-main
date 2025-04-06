@@ -37,7 +37,7 @@ class WP_Performance_Suite
         'defer_js' => true,
         'lazy_load' => true,
         'preload_resources' => true,
-        'disable_gutenberg' => false,
+        'disable_gutenberg' => true,
         'dns_prefetch' => true,
         'remove_jquery_migrate' => true,
 
@@ -920,20 +920,28 @@ class WP_Performance_Suite
      */
     public function show_template_path($admin_bar)
     {
-        if (!is_admin() && current_user_can('manage_options')) {
-            global $template;
-
-            $template_name = basename($template);
-            $template_path = str_replace(ABSPATH . 'wp-content/', '', $template);
-
-            $admin_bar->add_node([
-                'id'    => 'template-path',
-                'title' => 'Template: ' . $template_path,
-                'meta'  => [
-                    'title' => 'Full path: ' . $template
-                ]
-            ]);
+        if (!is_admin_bar_showing() || !current_user_can('manage_options') || is_admin()) {
+            return;
         }
+
+        global $template;
+        global $wp_admin_bar;
+
+
+        $theme_directory = basename(get_stylesheet_directory());
+
+        $template_path = str_replace(ABSPATH . "wp-content/themes/$theme_directory", '', $template);
+
+
+        $wp_admin_bar->add_node([
+            'id'    => 'template-path',
+            'title' => 'Template: ' . $template_path,
+            'top'   => true
+        ]);
+        /**
+         * Completely disable WordPress comments functionality
+         * @return void
+         */
     }
 
     /**

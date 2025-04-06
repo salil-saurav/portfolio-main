@@ -40,7 +40,7 @@ class WP_Starter_Admin
                 'deps' => [],
             ],
             'wp-starter-admin-style' => [
-                'url' => get_stylesheet_directory_uri() . '/assets/css/admin.css',
+                'url' => get_stylesheet_directory_uri() . '/assets/css/admin.min.css',
                 'deps' => [],
             ],
         ];
