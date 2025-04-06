@@ -1,58 +1,40 @@
-# WordPress Starter Project
+# 💼 Salil Saurav's Developer Portfolio
 
-A boilerplate setup for WordPress development with modern development tools and best practices.
+This is my personal portfolio website, built using **WordPress as a headless CMS** and a **fully custom-coded theme** using PHP, HTML, CSS, and JavaScript. The goal was to keep full control over performance, layout, and maintainability while leveraging the power of WordPress for content management.
 
-## Features
+## 🔧 Tech Stack
 
--   Basic WordPress installation
--   Development environment setup
--   Modern build tools integration
--   Security best practices
--   Starter theme structure
+- 🗃️ **Backend**: WordPress (PHP)
+- 🎨 **Frontend**: Custom Theme (no builders)
+- 🧩 **Styling**: CSS3 / SCSS
+- 🛠️ **JavaScript**: Vanilla JS
+- 🌐 **Hosting**: (Add your host - e.g., Vercel, Netlify, cPanel, etc.)
+- 🔗 **CMS**: WordPress Admin (self-hosted)
 
-## Getting Started
+## 🚀 Features
 
-1. Clone this repository
-2. Configure your local environment
-3. Install dependencies
-4. Run development server
+- Custom WordPress theme developed from scratch
+- Fully responsive and mobile-friendly
+- Optimized for performance (no bloated plugins or page builders)
+- SEO-friendly semantic HTML
+- Contact form integration
+- Easy-to-manage content via WordPress admin
+- Clean, minimal, and modern UI
 
-## Prerequisites
-
--   PHP 7.4 or higher
--   MySQL 5.7 or higher
--   Node.js and npm
--   Composer
-
-## Installation
+## 📁 Folder Structure
 
 ```bash
-# Clone repository
-git clone [repository-url]
-
-# Install dependencies
-composer install
-npm install
-
-# Configure environment
-cp .env.example .env
-```
-
-## Development
-
-```bash
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-```
-
-## Contributing
-
-Contributions are welcome! Please read our contributing guidelines.
-
-## License
-
-This project is licensed under the MIT License.
-</currentDocument>
+/dev
+├── assets/
+│   ├── css/
+│   ├── js/
+│   └── images/
+├── template-parts/
+├── templates
+├── inc/
+├── functions.php
+├── header.php
+├── footer.php
+├── index.php
+├── style.css
+└── 
