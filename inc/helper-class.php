@@ -50,7 +50,7 @@ class WP_Performance_Suite
 
         // Development tools
         'show_template_path' => true,
-        'debug_mode' => false
+        'debug_mode' => true
     ];
 
     /**
