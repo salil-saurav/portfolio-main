@@ -9,6 +9,8 @@ if (!defined('ABSPATH')) exit;
 get_header();
 // Header
 get_template_part('template-parts/header');
+get_template_part('template-parts/hero');
+get_template_part('template-parts/about');
 
 
 get_footer();

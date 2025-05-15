@@ -29,4 +29,6 @@ foreach (glob(__DIR__ . '/components/utility/*.php') as $utility_files) {
  * Require Meta fields
  */
 
-require_once __DIR__ . '/meta-fields/index.php';
+foreach (glob(__DIR__ . '/meta-fields/*.php') as $meta_fields) {
+    require_once $meta_fields;
+}

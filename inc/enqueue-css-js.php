@@ -54,10 +54,15 @@ class Theme_Asset_Manager
     private function setup_assets()
     {
         // CSS Assets
-        $this->add_css('main_style', get_stylesheet_directory_uri() . '/assets/css/main.css');
+        $this->add_css('font_roboto', 'https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+        $this->add_css('tooltip', get_template_directory_uri() . '/assets/css/tooltip.css');
+        $this->add_css('main_style', get_template_directory_uri() . '/assets/css/main.css');
+
+
 
         // JavaScript Assets
-        $this->add_js('dom_js', get_stylesheet_directory_uri() . '/assets/js/DOM.js');
+        $this->add_js('dom_js', get_template_directory_uri() . '/assets/js/DOM.js');
     }
 
     /**

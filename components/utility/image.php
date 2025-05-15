@@ -49,7 +49,7 @@ function get_image($attachment_id, array $args = []): string
     }
 
     // Build class attribute - ensure it's a string, not an array
-    $class_string = $config['lazyload'] ?  'lazyload img-fluid' : 'img-fluid' ;
+    $class_string = $config['lazyload'] ?  'lazyload img-fluid' : 'img-fluid';
 
     if (!empty($config['class'])) {
         // Handle if class is passed as string or array
@@ -68,7 +68,7 @@ function get_image($attachment_id, array $args = []): string
     $image_attributes = [
         'class'    =>  trim($class_string),
         'alt'      => esc_attr($config['alt']),
-        'src'      => $config['lazyload'] ? esc_url($placeholder['url']) : esc_url($image_src),
+        'src'      => $config['lazyload'] ?  esc_url($image_src) : esc_url($placeholder['url']),
         'loading'  => $config['lazyload'] ? 'lazy' : 'eager',
     ];
 

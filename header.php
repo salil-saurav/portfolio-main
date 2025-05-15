@@ -12,14 +12,45 @@
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Salil Saurav | Full-stack Developer</title>
 
-    <link rel="icon" type="image/png" href="<?= get_stylesheet_directory_uri() ?>/assets/images/favicon/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="<?= get_stylesheet_directory_uri() ?>/assets/images/favicon/favicon.svg" />
-    <link rel="shortcut icon" href="<?= get_stylesheet_directory_uri() ?>/assets/images/favicon/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="<?= get_stylesheet_directory_uri() ?>/assets/images/favicon/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="Salil Saurav" />
-    <link rel="manifest" href="<?= get_stylesheet_directory_uri() ?>/assets/images/favicon/site.webmanifest" />
-    <title><?php the_title() ?></title>
+    <script>
+        class TxtType {
+            constructor(el, toRotate, period) {
+                this.toRotate = toRotate;
+                this.el = el;
+                this.loopNum = 0;
+                this.period = parseInt(period, 10) || 2000;
+                this.txt = "";
+                this.isDeleting = false;
+                this.tick();
+            }
+
+            tick() {
+                const i = this.loopNum % this.toRotate.length;
+                const fullTxt = this.toRotate[i];
+
+                this.txt = this.isDeleting ?
+                    fullTxt.substring(0, this.txt.length - 1) :
+                    fullTxt.substring(0, this.txt.length + 1);
+
+                this.el.innerHTML = `<span class="wrap">${this.txt}</span> <span class="cursor">|</span>`;
+
+                let delta = 200 - Math.random() * 100;
+                if (this.isDeleting) delta /= 2;
+
+                if (!this.isDeleting && this.txt === fullTxt) {
+                    delta = this.period;
+                    this.isDeleting = true;
+                } else if (this.isDeleting && this.txt === "") {
+                    this.isDeleting = false;
+                    this.loopNum++;
+                    delta = 500;
+                }
+                setTimeout(() => this.tick(), delta);
+            }
+        }
+    </script>
 
     <?php wp_head(); ?>
 </head>

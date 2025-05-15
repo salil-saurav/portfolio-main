@@ -69,5 +69,3 @@ function equalizeHeights() {
 
     equalHeightDivs.forEach(div => div.style.height = maxHeight + 'px');
 }
-
-

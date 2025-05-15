@@ -23,7 +23,7 @@ class WP_Performance_Suite
         'disable_xmlrpc' => true,
         'limit_revisions' => true,
         'max_revisions' => 3,
-        'disable_heartbeat' => true,
+        'disable_heartbeat' => false,
         'heartbeat_frequency' => 60,
         'disable_self_pingbacks' => true,
         'disable_rss_feeds' => true,
@@ -209,7 +209,7 @@ class WP_Performance_Suite
             // WebP conversion
             if ($this->config['convert_to_webp']) {
                 add_filter('wp_handle_upload', [$this, 'convert_to_webp'], 10, 2);
-                add_filter('mime_types', [$this, 'enable_webp_support']);
+                add_filter('mime_types', [$this, 'enable_custom_mime_support']);
             }
         }
 
@@ -697,8 +697,7 @@ class WP_Performance_Suite
      */
     public function convert_to_webp($upload)
     {
-        // Skip non-images or files that are already WebP
-        if (strpos($upload['type'], 'image/') !== 0 || $upload['type'] === 'image/webp') {
+        if (strpos($upload['type'], 'image/') !== 0 || $upload['type'] === 'image/webp' || $upload['type'] === 'image/svg+xml') {
             return $upload;
         }
 
@@ -765,9 +764,10 @@ class WP_Performance_Suite
     /**
      * Enable WebP mime type support
      */
-    public function enable_webp_support($mimes)
+    public function enable_custom_mime_support($mimes)
     {
         $mimes['webp'] = 'image/webp';
+        $mimes['svg'] = 'image/svg+xml';
         return $mimes;
     }
 

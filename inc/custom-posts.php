@@ -8,21 +8,21 @@ if (!defined('ABSPATH')) exit;
  * Handles creation of custom post types and taxonomies with proper naming conventions
  * and robust configuration options.
  */
-class Custom_Post_Types_Manager {
+class Custom_Post_Types_Manager
+{
     /**
      * Custom post types configuration
      *
      * @var array
      */
     private $post_types = [
-        'portfolio' => [
-            'menu_icon' => 'dashicons-portfolio',
-            'taxonomies' => ['portfolio-category'],
+        'build' => [
+            'menu_icon' => 'dashicons-layout',
+            'taxonomies' => ['build_type'],
             'supports' => ['title', 'editor', 'thumbnail', 'excerpt']
         ],
         'testimonial' => [
             'menu_icon' => 'dashicons-testimonial',
-            'taxonomies' => ['testimonial-category'],
             'supports' => ['title', 'editor', 'thumbnail']
         ]
     ];
@@ -32,9 +32,10 @@ class Custom_Post_Types_Manager {
      *
      * @return void
      */
-    public static function init(): void {
+    public static function init(): void
+    {
         $instance = new self();
-        add_action('init', [$instance, 'register_post_types_and_taxonomies']);
+        $instance->register_post_types_and_taxonomies();
     }
 
     /**
@@ -42,14 +43,15 @@ class Custom_Post_Types_Manager {
      *
      * @return void
      */
-    public function register_post_types_and_taxonomies(): void {
+    public function register_post_types_and_taxonomies(): void
+    {
         foreach ($this->post_types as $post_type => $config) {
             $this->register_post_type($post_type, $config);
-            
+
             // Register associated taxonomies
             if (!empty($config['taxonomies'])) {
                 foreach ($config['taxonomies'] as $taxonomy) {
-                    $this->register_taxonomy($taxonomy, $post_type);
+                    $this->create_taxonomy($taxonomy, $post_type);
                 }
             }
         }
@@ -61,15 +63,16 @@ class Custom_Post_Types_Manager {
      * @param string $post_type_name Post type name (singular)
      * @return array Post type labels
      */
-    private function generate_post_type_labels(string $post_type_name): array {
+    private function generate_post_type_labels(string $post_type_name): array
+    {
         // Convert from slug format to readable format
         $singular = $this->format_name($post_type_name);
         $singular_ucfirst = ucfirst($singular);
-        
+
         // Get plural form
         $plural = $this->pluralize($singular);
         $plural_ucfirst = ucfirst($plural);
-        
+
         return [
             'name'               => $plural_ucfirst,
             'singular_name'      => $singular_ucfirst,
@@ -106,15 +109,16 @@ class Custom_Post_Types_Manager {
      * @param string $taxonomy_name Taxonomy name (slug format)
      * @return array Taxonomy labels
      */
-    private function generate_taxonomy_labels(string $taxonomy_name): array {
+    private function generate_taxonomy_labels(string $taxonomy_name): array
+    {
         // Convert from slug format to readable format
         $singular = $this->format_name($taxonomy_name);
         $singular_ucfirst = ucfirst($singular);
-        
+
         // Get plural form
         $plural = $this->pluralize($singular);
         $plural_ucfirst = ucfirst($plural);
-        
+
         return [
             'name'              => $plural_ucfirst,
             'singular_name'     => $singular_ucfirst,
@@ -144,16 +148,17 @@ class Custom_Post_Types_Manager {
      * @param array $config Configuration options
      * @return void
      */
-    private function register_post_type(string $post_type, array $config): void {
+    private function register_post_type(string $post_type, array $config): void
+    {
         // Normalize post type name to follow WordPress conventions
         $post_type = sanitize_key($post_type);
-        
+
         // Format for URL
         $slug = str_replace('_', '-', $post_type);
-        
+
         // Generate labels
         $labels = $this->generate_post_type_labels($post_type);
-        
+
         // Set up arguments with defaults
         $args = [
             'labels'       => $labels,
@@ -172,7 +177,7 @@ class Custom_Post_Types_Manager {
             'show_in_admin_bar' => $config['show_in_admin_bar'] ?? true,
             'capability_type' => $config['capability_type'] ?? 'post',
         ];
-        
+
         // Register the post type
         register_post_type($post_type, $args);
     }
@@ -184,16 +189,17 @@ class Custom_Post_Types_Manager {
      * @param string $post_type Post type to attach taxonomy to
      * @return void
      */
-    private function register_taxonomy(string $taxonomy, string $post_type): void {
+    private function create_taxonomy(string $taxonomy, string $post_type): void
+    {
         // Normalize taxonomy name to follow WordPress conventions
         $taxonomy = sanitize_key($taxonomy);
-        
+
         // Format for URL
         $slug = str_replace('_', '-', $taxonomy);
-        
+
         // Generate labels
         $labels = $this->generate_taxonomy_labels($taxonomy);
-        
+
         // Set up arguments
         $args = [
             'hierarchical'      => true,
@@ -208,7 +214,7 @@ class Custom_Post_Types_Manager {
             ],
             'show_in_rest'      => true,
         ];
-        
+
         // Register the taxonomy
         register_taxonomy($taxonomy, $post_type, $args);
     }
@@ -219,13 +225,11 @@ class Custom_Post_Types_Manager {
      * @param string $name Name to format
      * @return string Formatted name
      */
-    private function format_name(string $name): string {
+    private function format_name(string $name): string
+    {
         // Replace underscores and hyphens with spaces
         $formatted = str_replace(['-', '_'], ' ', $name);
-        
-        // Remove any category/type suffix
-        $formatted = str_replace(['category', 'type'], '', $formatted);
-        
+
         // Trim extra spaces
         return trim($formatted);
     }
@@ -236,7 +240,8 @@ class Custom_Post_Types_Manager {
      * @param string $word Word to pluralize
      * @return string Pluralized word
      */
-    private function pluralize(string $word): string {
+    private function pluralize(string $word): string
+    {
         // Common irregular plurals
         $irregular_plurals = [
             'child' => 'children',
@@ -248,22 +253,22 @@ class Custom_Post_Types_Manager {
             'tooth' => 'teeth',
             'woman' => 'women',
         ];
-        
+
         // Check for irregular plural
         if (isset($irregular_plurals[$word])) {
             return $irregular_plurals[$word];
         }
-        
+
         // Handle words ending in 'y'
         if (preg_match('/[bcdfghjklmnpqrstvwxz]y$/i', $word)) {
             return substr($word, 0, -1) . 'ies';
         }
-        
+
         // Handle words ending in 's', 'x', 'z', 'ch', 'sh'
         if (preg_match('/(s|x|z|ch|sh)$/i', $word)) {
             return $word . 'es';
         }
-        
+
         // Handle words ending in 'f' or 'fe'
         if (preg_match('/f$/i', $word)) {
             return substr($word, 0, -1) . 'ves';
@@ -271,11 +276,11 @@ class Custom_Post_Types_Manager {
         if (preg_match('/fe$/i', $word)) {
             return substr($word, 0, -2) . 'ves';
         }
-        
+
         // Regular plural: add 's'
         return $word . 's';
     }
 }
 
 // Initialize the class
-add_action('after_setup_theme', ['Custom_Post_Types_Manager', 'init']);
+add_action('init', ['Custom_Post_Types_Manager', 'init']);
