@@ -57,3 +57,37 @@
 
 <body <?php body_class(); ?>>
     <?php wp_body_open(); ?>
+
+    <!-- From Uiverse.io by wilsondesouza -->
+    <ul class="icon_container">
+
+        <?php
+
+        if (have_rows('social_icons')) {
+            while (have_rows('social_icons')) {
+                the_row();
+
+                $platform_link = get_sub_field('platform_link');
+                $platform_text =   get_sub_field('platform_text')
+        ?>
+
+                <li class="icon-content">
+                    <a
+                        href="<?= $platform_link ?>"
+                        aria-label="<?= ucfirst($platform_text)  ?>"
+                        data-social="<?= strtolower($platform_text) ?>"
+                        target="_blank">
+                        <div class="filled"></div>
+                        <?= get_image(get_sub_field('platform_icon')['id'], [
+                            'width' => [35, 35],
+                            'alt' => $platform_text,
+                        ]) ?>
+                    </a>
+                    <div class="tooltip"><?= $platform_text ?></div>
+                </li>
+        <?php
+            }
+        }
+        ?>
+
+    </ul>

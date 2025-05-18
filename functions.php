@@ -32,3 +32,15 @@ foreach (glob(__DIR__ . '/components/utility/*.php') as $utility_files) {
 foreach (glob(__DIR__ . '/meta-fields/*.php') as $meta_fields) {
     require_once $meta_fields;
 }
+
+
+function cta()
+{
+
+    $html =
+        '<a class="cta" href="tel:7701990393" style="margin-top: 15px;">
+            <span>Contact</span>
+        </a>';
+
+    echo $html;
+}

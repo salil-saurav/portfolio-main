@@ -2,7 +2,23 @@
  * DOM manipulation
  */
 
+
+AOS.init({
+    startEvent: 'DOMContentLoaded', // name of the event dispatched on the document, that AOS should initialize on
+    debounceDelay: 50, // the delay on debounce used while resizing window (advanced)
+    throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
+
+    // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
+    offset: 120, // offset (in px) from the original trigger point
+    delay: 0, // values from 0 to 3000, with step 50ms
+    duration: 600, // values from 0 to 3000, with step 50ms
+    easing: 'ease', // default easing for AOS animations
+    once: true, // whether animation should happen only once - while scrolling down
+});
+
+
 document.addEventListener('DOMContentLoaded', () => {
+
     const lazyImages = document.querySelectorAll('img.lazyload');
 
     if (lazyImages.length === 0) return; // Exit early if no lazy images are found
@@ -69,3 +85,56 @@ function equalizeHeights() {
 
     equalHeightDivs.forEach(div => div.style.height = maxHeight + 'px');
 }
+
+
+// 
+document.addEventListener("DOMContentLoaded", () => {
+    const options = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'fillBar 1.5s ease-out forwards';
+                observer.unobserve(entry.target); // Remove if you only want it once
+            }
+        });
+    }, options);
+
+    const elementsToAnimate = document.querySelectorAll('.progress-fill'); // Target class
+    elementsToAnimate.forEach(el => observer.observe(el));
+
+    // Sticky Scroll
+
+    const header = document.getElementById('header');
+    let lastScrollTop = window.scrollY;
+    let timeout;
+
+    window.addEventListener('scroll', () => {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+            const currentScroll = window.scrollY;
+            const delta = 5;
+
+            if (Math.abs(currentScroll - lastScrollTop) <= delta) return;
+
+            if (currentScroll < lastScrollTop) {
+                // Scrolling up - show header
+                header.classList.remove('slide-up');
+                header.classList.add('slide-down');
+            } else {
+                // Scrolling down - hide header
+                header.classList.remove('slide-down');
+                header.classList.add('slide-up');
+            }
+
+            lastScrollTop = currentScroll;
+        }, 100); // debounce time
+    });
+
+
+});

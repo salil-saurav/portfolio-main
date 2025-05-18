@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) exit; ?>
 <header id="header">
     <div class="container">
         <div class="head_wrap">
-            <div class="header_lt">
+            <div class="header_lt" data-aos="fade-right">
                 <div class="site_img">
                     <?= get_image(get_field('header_logo')['id'], [
                         'size' => [50, 50],
@@ -17,8 +17,9 @@ if (!defined('ABSPATH')) exit; ?>
                     <?= get_field('header_name') ?>
                 </div>
             </div>
-            <div class="header_rt">
+            <div class="header_rt" data-aos="fade-left">
                 <?php
+                /*
                 wp_nav_menu(array(
                     'theme_location' => 'primary',
                     'container' => 'nav',
@@ -26,43 +27,19 @@ if (!defined('ABSPATH')) exit; ?>
                     'menu_class' => 'primary-menu',
                     'fallback_cb' => false // optional: disables fallback menu
                 ));
+
+                */
                 ?>
+
+                <div class="cta_container">
+                    <div class="cta_inner">
+                        <div class="header_mail cta_content"> <a href="mailto:<?= get_field('cta_icon_mail_text') ?>"> <span class="cta_icon"> <?= get_image(get_field('cta_icon_mail')['id'], ['size' => [45, 45]]) ?> </span> <span class="cta_text"> <?= get_field('cta_icon_mail_text') ?></span> </a> </div>
+                    </div>
+                    <div class="cta_inner">
+                        <div class="header_call cta_content"> <a href="tel: <?= get_field('cta_icon_call_text')  ?>"> <span class="cta_icon"> <?= get_image(get_field('cta_icon_phone')['id'], ['size' => [45, 45]]) ?> </span> <span class="cta_text"> +91 <?= get_field('cta_icon_call_text')  ?></span> </a> </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </header>
-
-
-<!-- From Uiverse.io by wilsondesouza -->
-<ul class="icon_container">
-
-    <?php
-
-    if (have_rows('social_icons')) {
-        while (have_rows('social_icons')) {
-            the_row();
-
-            $platform_link = get_sub_field('platform_link');
-            $platform_text =   get_sub_field('platform_text')
-    ?>
-
-            <li class="icon-content">
-                <a
-                    href="<?= $platform_link ?>"
-                    aria-label="<?= ucfirst($platform_text)  ?>"
-                    data-social="<?= strtolower($platform_text) ?>"
-                    target="_blank">
-                    <div class="filled"></div>
-                    <?= get_image(get_sub_field('platform_icon')['id'], [
-                        'width' => [35, 35],
-                        'alt' => $platform_text,
-                    ]) ?>
-                </a>
-                <div class="tooltip"><?= $platform_text ?></div>
-            </li>
-    <?php
-        }
-    }
-    ?>
-
-</ul>
