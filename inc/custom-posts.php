@@ -21,10 +21,6 @@ class Custom_Post_Types_Manager
             'taxonomies' => ['build_type'],
             'supports' => ['title', 'editor', 'thumbnail', 'excerpt']
         ],
-        'testimonial' => [
-            'menu_icon' => 'dashicons-testimonial',
-            'supports' => ['title', 'editor', 'thumbnail']
-        ]
     ];
 
     /**

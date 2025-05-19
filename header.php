@@ -14,6 +14,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Salil Saurav | Full-stack Developer</title>
 
+    <?php wp_head(); ?>
+
     <script>
         class TxtType {
             constructor(el, toRotate, period) {
@@ -52,7 +54,6 @@
         }
     </script>
 
-    <?php wp_head(); ?>
 </head>
 
 <body <?php body_class(); ?>>
@@ -63,12 +64,12 @@
 
         <?php
 
-        if (have_rows('social_icons')) {
-            while (have_rows('social_icons')) {
+        if (have_rows('social_icons', 'option')) {
+            while (have_rows('social_icons', 'option')) {
                 the_row();
 
-                $platform_link = get_sub_field('platform_link');
-                $platform_text =   get_sub_field('platform_text')
+                $platform_link = get_sub_field('platform_link', 'option');
+                $platform_text =   get_sub_field('platform_text', 'option')
         ?>
 
                 <li class="icon-content">
@@ -89,5 +90,4 @@
             }
         }
         ?>
-
     </ul>

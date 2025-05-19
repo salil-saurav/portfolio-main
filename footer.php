@@ -12,15 +12,15 @@
 
         <!-- Left: Name and Bio -->
         <div class="footer-section footer-about" data-aos="fade-right">
-            <h3 class="footer-title">Salil Saurav</h3>
+            <h3 class="footer-title"> <?= get_field('header_name', 'option') ?></h3>
             <p class="footer-description">
-                A backend-focused full-stack web developer, building robust, scalable, and secure web applications that power seamless user experiences and drive business outcomes
+                <?= get_field('footer_description', 'option') ?>
             </p>
         </div>
 
         <!-- Right: Social Links -->
         <div class="footer-section footer-social" data-aos="fade-left">
-            <h3 class="footer-social-title">Let's Connect</h3>
+            <h3 class="footer-social-title"><?= get_field('footer_connect_label', 'option') ?></h3>
             <div class="footer-icons">
 
                 <?php
@@ -57,8 +57,7 @@
         <!-- Middle: Copyright -->
         <div class="footer-section footer-copy">
             <span>
-                &copy; <?= date('Y') ?>. Made with ❤️ by
-                <a href="#" class="footer-link">Salil Saurav</a>
+                &copy; <?= date('Y') . get_field('footer_copy_content', 'option') ?>
             </span>
         </div>
     </div>

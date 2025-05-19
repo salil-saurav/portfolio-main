@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HTML, CSS, and JS Minification functionality
  *
@@ -17,7 +18,8 @@ if (!defined('ABSPATH')) {
  * 
  * Handles HTML, inline CSS and JS minification during page rendering
  */
-class HTML_Minifier {
+class HTML_Minifier
+{
     /**
      * Configuration options
      *
@@ -38,7 +40,8 @@ class HTML_Minifier {
      * @param array $config Optional. Configuration to override defaults.
      * @return void
      */
-    public static function init($config = []) {
+    public static function init($config = [])
+    {
         // Merge user config with defaults
         if (!empty($config) && is_array($config)) {
             self::$config = array_merge(self::$config, $config);
@@ -48,7 +51,7 @@ class HTML_Minifier {
         if (self::should_minify()) {
             add_action('template_redirect', [self::class, 'start_buffer'], 1);
             add_action('shutdown', [self::class, 'end_buffer'], 0);
-            
+
             if (self::$config['version_assets']) {
                 add_filter('style_loader_src', [self::class, 'version_assets'], 10, 2);
                 add_filter('script_loader_src', [self::class, 'version_assets'], 10, 2);
@@ -62,7 +65,8 @@ class HTML_Minifier {
      * @param array $config Configuration options
      * @return void
      */
-    public static function configure($config) {
+    public static function configure($config)
+    {
         if (!empty($config) && is_array($config)) {
             self::$config = array_merge(self::$config, $config);
         }
@@ -73,7 +77,8 @@ class HTML_Minifier {
      *
      * @return void
      */
-    public static function start_buffer() {
+    public static function start_buffer()
+    {
         ob_start([self::class, 'minify']);
     }
 
@@ -82,7 +87,8 @@ class HTML_Minifier {
      *
      * @return void
      */
-    public static function end_buffer() {
+    public static function end_buffer()
+    {
         if (ob_get_level() > 0) {
             ob_end_flush();
         }
@@ -94,7 +100,8 @@ class HTML_Minifier {
      * @param string $buffer The HTML content to minify
      * @return string The minified HTML content
      */
-    public static function minify($buffer) {
+    public static function minify($buffer)
+    {
         // Only process HTML
         if (!is_string($buffer) || empty($buffer)) {
             return $buffer;
@@ -107,10 +114,11 @@ class HTML_Minifier {
                 if (preg_match_all('/<!--\[if[^\]]*?\]>.*?<!\[endif\]-->/is', $buffer, $matches)) {
                     $conditionals = $matches[0];
                     // Replace conditionals with placeholders
-                    $buffer = preg_replace_callback('/<!--\[if[^\]]*?\]>.*?<!\[endif\]-->/is', 
-                        function($match) {
+                    $buffer = preg_replace_callback(
+                        '/<!--\[if[^\]]*?\]>.*?<!\[endif\]-->/is',
+                        function ($match) {
                             return '<!-- WPSTARTER_CONDITIONAL_' . md5($match[0]) . ' -->';
-                        }, 
+                        },
                         $buffer
                     );
                 }
@@ -123,35 +131,39 @@ class HTML_Minifier {
 
             // Minify inline CSS if enabled
             if (self::$config['minify_inline_css']) {
-                $buffer = preg_replace_callback('/<style\b[^>]*>(.*?)<\/style>/is', 
-                    function($matches) {
+                $buffer = preg_replace_callback(
+                    '/<style\b[^>]*>(.*?)<\/style>/is',
+                    function ($matches) {
                         $content = $matches[1];
                         // Don't minify if it contains expressions that might break
                         if (strpos($content, 'calc(') !== false || strpos($content, '@keyframes') !== false) {
                             return $matches[0];
                         }
                         return '<style>' . Minifier::minify_css($content) . '</style>';
-                    }, 
+                    },
                     $buffer
                 );
             }
 
             // Minify inline JavaScript if enabled
             if (self::$config['minify_inline_js']) {
-                $buffer = preg_replace_callback('/<script\b([^>]*)>(.*?)<\/script>/is',
-                    function($matches) {
+                $buffer = preg_replace_callback(
+                    '/<script\b([^>]*)>(.*?)<\/script>/is',
+                    function ($matches) {
                         $attributes = $matches[1];
                         $content = $matches[2];
-                        
+
                         // Don't minify if it's an external script or type isn't javascript
-                        if (strpos($attributes, 'src=') !== false || 
-                            (strpos($attributes, 'type=') !== false && 
-                             !preg_match('/type=(["\'])(?:text|application)\/(?:javascript|ecmascript)\1/i', $attributes))) {
+                        if (
+                            strpos($attributes, 'src=') !== false ||
+                            (strpos($attributes, 'type=') !== false &&
+                                !preg_match('/type=(["\'])(?:text|application)\/(?:javascript|ecmascript)\1/i', $attributes))
+                        ) {
                             return $matches[0];
                         }
-                        
+
                         return "<script {$attributes}>" . Minifier::minify_js($content) . '</script>';
-                    }, 
+                    },
                     $buffer
                 );
             }
@@ -181,7 +193,8 @@ class HTML_Minifier {
      * @param string $buffer HTML content
      * @return string Minified HTML
      */
-    private static function minify_html($buffer) {
+    private static function minify_html($buffer)
+    {
         $search = [
             '/\>[^\S ]+/s',     // Remove whitespace after tags
             '/[^\S ]+\</s',     // Remove whitespace before tags
@@ -209,7 +222,8 @@ class HTML_Minifier {
      * @param string $handle Asset handle
      * @return string Modified URL
      */
-    public static function version_assets($src, $handle) {
+    public static function version_assets($src, $handle)
+    {
         if (empty($src) || is_admin()) {
             return $src;
         }
@@ -233,7 +247,8 @@ class HTML_Minifier {
      *
      * @return bool
      */
-    private static function should_minify() {
+    private static function should_minify()
+    {
         // Don't minify for admin pages
         if (is_admin()) {
             return false;
@@ -264,7 +279,8 @@ class HTML_Minifier {
  * 
  * Handles static CSS and JS file minification
  */
-class Minifier {
+class Minifier
+{
     /**
      * Configuration options
      *
@@ -283,7 +299,8 @@ class Minifier {
      * @param array $config Configuration options
      * @return void
      */
-    public static function configure($config) {
+    public static function configure($config)
+    {
         if (!empty($config) && is_array($config)) {
             self::$config = array_merge(self::$config, $config);
         }
@@ -295,7 +312,8 @@ class Minifier {
      * @param string $js JavaScript code
      * @return string Minified code
      */
-    public static function minify_js($js) {
+    public static function minify_js($js)
+    {
         if (empty($js)) {
             return '';
         }
@@ -304,7 +322,7 @@ class Minifier {
             // Preserve important multi-line comments that might be license information
             $important_comments = [];
             preg_match_all('/\/\*![\s\S]*?\*\//m', $js, $matches);
-            
+
             if (!empty($matches[0])) {
                 foreach ($matches[0] as $i => $comment) {
                     $placeholder = "/* IMPORTANT_COMMENT_{$i} */";
@@ -315,27 +333,27 @@ class Minifier {
 
             // Remove single line comments
             $js = preg_replace('/\/\/.*$/m', '', $js);
-            
+
             // Remove multi-line comments
             $js = preg_replace('/\/\*(?!.*?\*\/).*?\*\//s', '', $js);
-            
+
             // Remove whitespace
             $js = preg_replace('/\s+/', ' ', $js);
-            
+
             // More aggressive optimization if configured
             if (self::$config['js_aggressive']) {
                 // Remove spaces around operators and separators
                 $js = preg_replace('/\s*([=+\-*\/%<>!&|:;,()])\s*/', '$1', $js);
-                
+
                 // Remove unnecessary semicolons
                 $js = preg_replace('/;+\}/', '}', $js);
             }
-            
+
             // Restore important comments
             foreach ($important_comments as $placeholder => $comment) {
                 $js = str_replace($placeholder, $comment, $js);
             }
-            
+
             return trim($js);
         } catch (\Exception $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
@@ -351,7 +369,8 @@ class Minifier {
      * @param string $css CSS code
      * @return string Minified code
      */
-    public static function minify_css($css) {
+    public static function minify_css($css)
+    {
         if (empty($css)) {
             return '';
         }
@@ -360,7 +379,7 @@ class Minifier {
             // Preserve important comments (e.g., licenses)
             $important_comments = [];
             preg_match_all('/\/\*![\s\S]*?\*\//m', $css, $matches);
-            
+
             if (!empty($matches[0])) {
                 foreach ($matches[0] as $i => $comment) {
                     $placeholder = "/* IMPORTANT_COMMENT_{$i} */";
@@ -368,37 +387,37 @@ class Minifier {
                     $css = str_replace($comment, $placeholder, $css);
                 }
             }
-            
+
             // Remove comments
             $css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
-            
+
             // Remove whitespace
             $css = str_replace(["\r\n", "\r", "\n", "\t"], '', $css);
-            
+
             // Remove unnecessary spaces
             $css = preg_replace('/\s+/', ' ', $css);
             $css = preg_replace('/\s*([\{\}:;,])\s*/', '$1', $css);
-            
+
             // Remove trailing semicolons
             $css = str_replace(';}', '}', $css);
-            
+
             // More aggressive optimization if configured
             if (self::$config['css_aggressive']) {
                 // Shorten hex color codes from #ffffff to #fff where possible
                 $css = preg_replace('/#([a-f0-9])\1([a-f0-9])\2([a-f0-9])\3/i', '#$1$2$3', $css);
-                
+
                 // Remove units from zero values (0px -> 0)
                 $css = preg_replace('/(?<!\d)0(?:em|ex|px|pt|pc|in|cm|mm|%)/i', '0', $css);
-                
+
                 // Remove leading zeros from decimal values (.5 instead of 0.5)
                 $css = preg_replace('/0\.([0-9]+)/', '.$1', $css);
             }
-            
+
             // Restore important comments
             foreach ($important_comments as $placeholder => $comment) {
                 $css = str_replace($placeholder, $comment, $css);
             }
-            
+
             return trim($css);
         } catch (\Exception $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
@@ -415,7 +434,8 @@ class Minifier {
      * @param array $options Processing options
      * @return array Statistics of processed files
      */
-    public static function process_assets($assets_dir, $options = []) {
+    public static function process_assets($assets_dir, $options = [])
+    {
         // Merge options with defaults
         $options = array_merge([
             'js_dir' => '/js',
@@ -435,8 +455,8 @@ class Minifier {
         ];
 
         // Process JS files
-        $js_dirs = $options['recursive'] 
-            ? self::recursive_glob($assets_dir . $options['js_dir'], $options['file_mask'] . '.js') 
+        $js_dirs = $options['recursive']
+            ? self::recursive_glob($assets_dir . $options['js_dir'], $options['file_mask'] . '.js')
             : glob($assets_dir . $options['js_dir'] . '/' . $options['file_mask'] . '.js');
 
         if (!empty($js_dirs)) {
@@ -456,7 +476,7 @@ class Minifier {
                     $stats['js_size_after'] += $minified_size;
 
                     $minified_js_file = str_replace('.js', '.min.js', $js_file);
-                    
+
                     // Check if we should overwrite existing minified files
                     if (!file_exists($minified_js_file) || self::$config['overwrite_existing']) {
                         file_put_contents($minified_js_file, $minified_js);
@@ -470,8 +490,8 @@ class Minifier {
         }
 
         // Process CSS files
-        $css_dirs = $options['recursive'] 
-            ? self::recursive_glob($assets_dir . $options['css_dir'], $options['file_mask'] . '.css') 
+        $css_dirs = $options['recursive']
+            ? self::recursive_glob($assets_dir . $options['css_dir'], $options['file_mask'] . '.css')
             : glob($assets_dir . $options['css_dir'] . '/' . $options['file_mask'] . '.css');
 
         if (!empty($css_dirs)) {
@@ -491,7 +511,7 @@ class Minifier {
                     $stats['css_size_after'] += $minified_size;
 
                     $minified_css_file = str_replace('.css', '.min.css', $css_file);
-                    
+
                     // Check if we should overwrite existing minified files
                     if (!file_exists($minified_css_file) || self::$config['overwrite_existing']) {
                         file_put_contents($minified_css_file, $minified_css);
@@ -508,7 +528,7 @@ class Minifier {
         if ($stats['js_size_before'] > 0) {
             $stats['js_savings'] = round(($stats['js_size_before'] - $stats['js_size_after']) / $stats['js_size_before'] * 100, 2);
         }
-        
+
         if ($stats['css_size_before'] > 0) {
             $stats['css_savings'] = round(($stats['css_size_before'] - $stats['css_size_after']) / $stats['css_size_before'] * 100, 2);
         }
@@ -524,13 +544,14 @@ class Minifier {
      * @param int $flags Glob flags
      * @return array Files found
      */
-    private static function recursive_glob($base_dir, $pattern, $flags = 0) {
+    private static function recursive_glob($base_dir, $pattern, $flags = 0)
+    {
         $files = glob(rtrim($base_dir, '/') . '/' . $pattern, $flags);
-        
-        foreach (glob(rtrim($base_dir, '/') . '/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
+
+        foreach (glob(rtrim($base_dir, '/') . '/*', GLOB_ONLYDIR | GLOB_NOSORT) as $dir) {
             $files = array_merge($files, self::recursive_glob($dir, $pattern, $flags));
         }
-        
+
         return $files;
     }
 }
@@ -540,16 +561,18 @@ class Minifier {
  * 
  * Main class for optimizing assets including file concatenation and automatic compression
  */
-class Asset_Optimizer {
+class Asset_Optimizer
+{
     /**
      * Initialize the optimizer with default actions
      *
      * @return void
      */
-    public static function init() {
+    public static function init()
+    {
         // Enable HTML minification with default settings
         HTML_Minifier::init();
-        
+
         // Hook into theme setup to process assets if needed
         add_action('after_setup_theme', [self::class, 'maybe_process_assets']);
     }
@@ -559,12 +582,13 @@ class Asset_Optimizer {
      *
      * @return void
      */
-    public static function maybe_process_assets() {
+    public static function maybe_process_assets()
+    {
         // Only process assets during development or when forced
         if ((defined('WP_DEBUG') && WP_DEBUG) || (isset($_GET['optimize_assets']) && current_user_can('manage_options'))) {
-            $theme_dir = get_template_directory();
+            $theme_dir = get_stylesheet_directory();
             $assets_dir = apply_filters('wpstarter_assets_dir', $theme_dir . '/assets');
-            
+
             self::process_theme_assets($assets_dir);
         }
     }
@@ -576,21 +600,23 @@ class Asset_Optimizer {
      * @param array $options Processing options
      * @return array Processing statistics
      */
-    public static function process_theme_assets($assets_dir, $options = []) {
+    public static function process_theme_assets($assets_dir, $options = [])
+    {
         $options = array_merge([
             'recursive' => true,
             'file_mask' => '*',
         ], $options);
-        
+
         return Minifier::process_assets($assets_dir, $options);
     }
-    
+
     /**
      * Register admin menu for asset optimization
      *
      * @return void
      */
-    public static function register_admin_menu() {
+    public static function register_admin_menu()
+    {
         add_management_page(
             'Asset Optimization',
             'Asset Optimizer',
@@ -599,24 +625,25 @@ class Asset_Optimizer {
             [self::class, 'admin_page']
         );
     }
-    
+
     /**
      * Admin page for asset optimization
      *
      * @return void
      */
-    public static function admin_page() {
+    public static function admin_page()
+    {
         // Admin UI code would go here - implement as needed
         echo '<div class="wrap">';
         echo '<h1>Asset Optimizer</h1>';
-        
+
         // Process assets if requested
         if (isset($_POST['process_assets']) && check_admin_referer('wpstarter_optimize_assets')) {
             $theme_dir = get_template_directory();
             $assets_dir = apply_filters('wpstarter_assets_dir', $theme_dir . '/assets');
-            
+
             $stats = self::process_theme_assets($assets_dir);
-            
+
             echo '<div class="notice notice-success"><p>';
             echo sprintf(
                 'Processed %d JS files (saved %.2f%%) and %d CSS files (saved %.2f%%)',
@@ -626,7 +653,7 @@ class Asset_Optimizer {
                 $stats['css_savings'] ?? 0
             );
             echo '</p></div>';
-            
+
             if (!empty($stats['errors'])) {
                 echo '<div class="notice notice-error"><p>';
                 echo 'Encountered errors during processing:';
@@ -638,19 +665,19 @@ class Asset_Optimizer {
                 echo '</p></div>';
             }
         }
-        
+
         // Settings form
         echo '<form method="post">';
         wp_nonce_field('wpstarter_optimize_assets');
         echo '<p><button type="submit" name="process_assets" class="button button-primary">Process Theme Assets</button></p>';
         echo '</form>';
-        
+
         echo '</div>';
     }
 }
 
 // Optional hook for admin page
- add_action('admin_menu', ['WPStarter\Optimization\Asset_Optimizer', 'register_admin_menu']);
+add_action('admin_menu', ['WPStarter\Optimization\Asset_Optimizer', 'register_admin_menu']);
 
 // Initialize the optimization system
 Asset_Optimizer::init();
